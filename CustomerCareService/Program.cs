@@ -1,11 +1,23 @@
+using CustomerCareService;
+using Data.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Add PostgreSQL database configuration
+var connectionString = builder.Configuration.GetConnectionString("CustomerDbConnection");
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseNpgsql(connectionString,b=> b.MigrationsAssembly("Data")));
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddServices();
+
 
 var app = builder.Build();
 
