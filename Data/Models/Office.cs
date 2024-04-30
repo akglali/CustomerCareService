@@ -19,7 +19,7 @@ namespace Data.Models
 
         public List<Customer>? Customers {  set; get; }
 
-        public List<Empoloyee>? Empoloyees { set; get; }
+        public List<Employee>? Empoloyees { set; get; }
 
     }
 }
