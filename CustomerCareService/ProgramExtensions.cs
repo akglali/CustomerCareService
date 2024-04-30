@@ -8,7 +8,9 @@ namespace CustomerCareService
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<CompanyRepository>();
-           
+            services.AddScoped<OfficeRepository>();
+
+
         }
     }
 }

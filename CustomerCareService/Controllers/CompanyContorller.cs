@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
 using Shared.Repositories;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CustomerCareService.Controllers
 {
@@ -25,7 +26,7 @@ namespace CustomerCareService.Controllers
 
         [HttpPost]  
 
-        public async Task<IActionResult> AddCompany(CompanyDTO company)
+        public async Task<IActionResult> AddCompany(AddCompanyDTO company)
         {
             if( await _companyRepository.CompanyExists(company.CompanyCode) )
             {
@@ -41,6 +42,20 @@ namespace CustomerCareService.Controllers
             await _companyRepository.AddAsync(newCompany);
             return Ok();
 
+        }
+
+        [HttpGet("CompanyCode")]
+
+        public async Task<IActionResult> GetCompanyByCode(int CompanyCode)
+        {
+            if (!await _companyRepository.CompanyExists(CompanyCode))
+            {
+                return Conflict("The company code is not exist");
+            }
+
+            var company = await _companyRepository.CompanyByCode(CompanyCode);
+
+            return Ok(company);
         }
 
     }
