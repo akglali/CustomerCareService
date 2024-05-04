@@ -51,26 +51,47 @@ namespace Shared.Repositories
                 Company = company, // it can't be null since we already check if the companyCode Exist or not
 
             };
-
-            await _officeRepository.AddAsync(newOffice);
+        await _officeRepository.AddAsync(newOffice);
 
             return Ok();
 
         }
 
-        [HttpGet("GetAllOffices")]
+        [HttpGet("AllOffices")]
 
         public async  Task<IActionResult> GetAllOffices()
         {
-            var offices = _officeRepository.GetAll();
-                                  
-            return Ok(offices);
+            try
+            {
+                var offices = await _officeRepository.GetAllOffice();
+                return Ok(offices);
+            }
+            catch (Exception ex)
+            {
+              
+                // Log the exception
+                return StatusCode(500, "An error occurred while retrieving offices.");
+            }
         }
 
-        /* foreach (var office in offices)
-    {
-        office.Company= 
-    } 
-*/
+        [HttpGet("OfficeById")]
+        
+
+        public async Task<IActionResult> GetOfficeById(int OfficeCode)
+        {
+
+            if(!await _officeRepository.OfficeExist(OfficeCode))
+            {
+                return Conflict("The office code is not exist");
+
+            }
+
+            var office = await _officeRepository.GetOfficeByCode(OfficeCode);
+
+            return Ok(office);
+
+        }
+
+ 
     }
 }
