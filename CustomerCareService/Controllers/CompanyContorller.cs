@@ -58,5 +58,21 @@ namespace CustomerCareService.Controllers
             return Ok(company);
         }
 
+
+        [HttpGet("AllCompanies")]
+        public async Task<IActionResult> GetAllCompanies()
+        {
+            try
+            {
+                var companies = await _companyRepository.GetAllCompanies();
+                return Ok(companies);
+            }
+            catch (Exception ex)
+            {
+
+                // Log the exception
+                return StatusCode(500, "An error occurred while retrieving offices.");
+            }
+        }
     }
 }
