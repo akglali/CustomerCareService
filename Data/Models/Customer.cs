@@ -11,11 +11,12 @@ namespace Data.Models
         [MaxLength(100)]
         public string LastName { get; set; }
 
-        [MaxLength(15)]
-
+        [MaxLength(20)]
+        [Phone]
         public string CustomerPhone { get; set; }
 
         [MaxLength(100)]
+        [EmailAddress]
 
         public string CustomerEmail { get; set; }
 
