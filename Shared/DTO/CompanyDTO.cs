@@ -19,7 +19,7 @@ namespace Shared.DTO
         public int CompanyCode { get; set; }
         public string CompanyName { get; set; }
 
-        public List<OfficeCompanyDTO> Offices { get; set; }
+        public List<OfficeCompanyDTO>? Offices { get; set; }
     }
 
     public class OfficeCompanyDTO
