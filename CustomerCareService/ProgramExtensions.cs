@@ -9,6 +9,8 @@ namespace CustomerCareService
         {
             services.AddScoped<CompanyRepository>();
             services.AddScoped<OfficeRepository>();
+            services.AddScoped<CustomerRepository>();
+
 
 
         }
