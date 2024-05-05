@@ -24,6 +24,8 @@ namespace Data.Models
 
         public List<Salary> Salaries { get; set; }
 
+        public List<CustomerCase> CustomerCases { get; set; }
+
 
 
 
