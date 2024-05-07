@@ -43,7 +43,7 @@ namespace Shared.Repositories
                     Employee = new Employee() { }
                 };
                 context.EmployeesWeeklyHours.Add(newRecord);
-
+            }
 
                 return true;
         }
