@@ -1,4 +1,5 @@
-﻿using Shared.Repositories;
+﻿using Data.Models;
+using Shared.Repositories;
 
 namespace CustomerCareService
 {
@@ -10,6 +11,8 @@ namespace CustomerCareService
             services.AddScoped<CompanyRepository>();
             services.AddScoped<OfficeRepository>();
             services.AddScoped<CustomerRepository>();
+            services.AddScoped<CustomerCaseRepository>();
+            services.AddScoped<EmployeeRepository>();
 
 
 

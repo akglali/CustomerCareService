@@ -2,10 +2,10 @@
 
 namespace Data.Models
 {
-    public class Employee : BaseEntity
+    public class Employee : BaseReposityory
     {
 
-        public int EmployeeId { get; set; }
+        public int EmployeeCode { get; set; }
 
         [MaxLength(100)]
         public string Name { get; set; }
@@ -18,6 +18,9 @@ namespace Data.Models
         [EmailAddress]
         public string Email {  get; set; }
 
+        [MaxLength(100)]
+        public string PhoneNumber {  get; set; }
+
         public int HourlyWage {  get; set; }
 
         public Office Office { get; set; }
@@ -25,6 +28,8 @@ namespace Data.Models
         public List<Salary> Salaries { get; set; }
 
         public List<CustomerCase> CustomerCases { get; set; }
+
+
 
 
 

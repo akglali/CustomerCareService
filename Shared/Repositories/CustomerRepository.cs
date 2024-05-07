@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.Migrations;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
 using Shared.DTO;
@@ -17,7 +18,12 @@ namespace Shared.Repositories
         {
             return await context.Customers.AnyAsync(c=> c.CustomerPhone == Phone);
         }
+        
 
+        public async Task<Customer?> GetCustomerByPhone(string CustomerPhone)
+        {
+            return await context.Customers.FirstOrDefaultAsync(c=> c.CustomerPhone == CustomerPhone);
+        }
 
         public async Task<CustomerDetailDTO> GetCustomerDetail(string phone)
         {

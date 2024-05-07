@@ -3,19 +3,19 @@ using System.Text;
 
 namespace Data.Models
 {
-    public class CustomerCase : BaseEntity
+    public class CustomerCase : BaseReposityory
     {
 
         [MaxLength(15)]
         
         public string CaseNumber { get; set; } 
 
-        [MaxLength(15)]
+        [MaxLength(255)]
         public string Complain { get; set; }
 
-        [MaxLength(15)]
+        [MaxLength(255)]
         public string Solution { get; set; }
-        [MaxLength(15)]
+        [MaxLength(255)]
         public string Notes { get; set; }
 
         public Customer Customer {  get; set; }

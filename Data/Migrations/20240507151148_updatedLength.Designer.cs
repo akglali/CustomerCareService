@@ -3,6 +3,7 @@ using System;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240507151148_updatedLength")]
+    partial class updatedLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,20 +197,20 @@ namespace Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long?>("SalaryId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TotalWeeklyHours")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("WeeklyHoursId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
 
-                    b.HasIndex("SalaryId");
+                    b.HasIndex("WeeklyHoursId");
 
                     b.ToTable("EmployeesWeeklyHours");
                 });
@@ -255,13 +258,7 @@ namespace Data.Migrations
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("EndingPeriod")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("PaidDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartingPeriod")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -320,11 +317,13 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Models.Salary", null)
-                        .WithMany("WeeklyHours")
-                        .HasForeignKey("SalaryId");
+                    b.HasOne("Data.Models.EmployeeWeeklyHours", "WeeklyHours")
+                        .WithMany()
+                        .HasForeignKey("WeeklyHoursId");
 
                     b.Navigation("Employee");
+
+                    b.Navigation("WeeklyHours");
                 });
 
             modelBuilder.Entity("Data.Models.Office", b =>
@@ -371,11 +370,6 @@ namespace Data.Migrations
                     b.Navigation("Customers");
 
                     b.Navigation("Empoloyees");
-                });
-
-            modelBuilder.Entity("Data.Models.Salary", b =>
-                {
-                    b.Navigation("WeeklyHours");
                 });
 #pragma warning restore 612, 618
         }

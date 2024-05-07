@@ -26,6 +26,7 @@ namespace Shared.Repositories
             return await context.Offices.FirstOrDefaultAsync(o => o.OfficeCode == OfficeCode);
         }
 
+
         public async Task<List<OfficeDTOWithAllEntities>> GetAllOffice()
         {
             var offices = await context.Offices.Include(o=> o.Company).ToListAsync();

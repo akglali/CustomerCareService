@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Repositories
 {
-    public class BaseRepository<T>(DatabaseContext context) where T : BaseEntity
+    public class BaseRepository<T>(DatabaseContext context) where T : BaseReposityory
     {
        
         public IQueryable<T> GetAll()

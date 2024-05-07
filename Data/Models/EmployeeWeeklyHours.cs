@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class EmployeeWeeklyHours 
+    public class EmployeeWeeklyHours: BaseReposityory
     {
         public int Id { get; set; }
 
@@ -18,7 +18,6 @@ namespace Data.Models
 
         public Employee Employee { get; set; }
 
-        public EmployeeWeeklyHours? WeeklyHours { get; set; }
 
     }
 }

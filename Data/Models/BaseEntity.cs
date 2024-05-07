@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public abstract class BaseEntity
+    public abstract class BaseReposityory
     {
         public long Id { get; set; }
         public DateTime CreatedDate { get; set; } =DateTime.UtcNow;

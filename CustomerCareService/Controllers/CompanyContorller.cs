@@ -13,13 +13,11 @@ namespace CustomerCareService.Controllers
     {
 
 
-        private readonly DatabaseContext _databaseContext;
         
         private readonly CompanyRepository _companyRepository;
 
-        public CompanyContorller(CompanyRepository companyRepository, DatabaseContext databaseContext)
+        public CompanyContorller(CompanyRepository companyRepository)
         {
-            _databaseContext = databaseContext;
             _companyRepository = companyRepository;
         }
 

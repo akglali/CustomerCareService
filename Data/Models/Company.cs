@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class Company : BaseEntity
+    public class Company : BaseReposityory
     {
         public int CompanyCode { get; set; }
 

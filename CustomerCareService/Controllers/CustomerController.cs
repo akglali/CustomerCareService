@@ -10,15 +10,13 @@ namespace CustomerCareService.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly DatabaseContext _context;
 
         private readonly OfficeRepository _officeRepository;
         private readonly CustomerRepository _customerRepository;
 
 
-        public CustomerController(OfficeRepository officeRepository, DatabaseContext databaseContext, CustomerRepository customerRepository)
+        public CustomerController(OfficeRepository officeRepository,CustomerRepository customerRepository)
         {
-            _context = databaseContext;
             _officeRepository = officeRepository;
             _customerRepository = customerRepository;
         }

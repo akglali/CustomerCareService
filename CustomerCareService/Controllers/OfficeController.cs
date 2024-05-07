@@ -15,15 +15,12 @@ namespace Shared.Repositories
     public class OfficeController : ControllerBase
     {
 
-        private readonly DatabaseContext _databaseContext;
-
         private readonly OfficeRepository _officeRepository;
         private readonly CompanyRepository _companyRepository;
 
 
-        public OfficeController(OfficeRepository officeRepository, DatabaseContext databaseContext, CompanyRepository companyRepository)
+        public OfficeController(OfficeRepository officeRepository, CompanyRepository companyRepository)
         {
-            _databaseContext = databaseContext;
             _officeRepository = officeRepository;
             _companyRepository = companyRepository;
         }

@@ -13,5 +13,7 @@ namespace Shared.DTO
         public string Solution { get; set; }
         public string Notes { get; set; }
         public string CustomerPhone { get; set; }
+
+        public int EmployeeId {  get; set; }
     }
 }

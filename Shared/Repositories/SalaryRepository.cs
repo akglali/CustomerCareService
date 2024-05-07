@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Repositories
 {
-    public class CustomerCaseRepository(DatabaseContext context) : BaseRepository<CustomerCase>(context)
+    public class SalaryRepository(DatabaseContext context) : BaseRepository<Salary>(context)
     {
 
-        
+       
 
     }
 }
