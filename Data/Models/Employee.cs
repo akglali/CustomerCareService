@@ -2,7 +2,7 @@
 
 namespace Data.Models
 {
-    public class Employee : BaseReposityory
+    public class Employee : BaseEntity
     {
 
         public int EmployeeCode { get; set; }

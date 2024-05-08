@@ -2,7 +2,7 @@
 
 namespace Data.Models
 {
-    public class Customer : BaseReposityory
+    public class Customer : BaseEntity
     {
 
         [MaxLength(100)]

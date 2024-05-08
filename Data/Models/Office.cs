@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class Office : BaseReposityory
+    public class Office : BaseEntity
     {
 
         public int OfficeCode { set; get; }

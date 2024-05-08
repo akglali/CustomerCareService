@@ -13,6 +13,7 @@ namespace CustomerCareService
             services.AddScoped<CustomerRepository>();
             services.AddScoped<CustomerCaseRepository>();
             services.AddScoped<EmployeeRepository>();
+            services.AddScoped<DailyHoursRepository>();
 
 
 

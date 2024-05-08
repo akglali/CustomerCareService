@@ -17,7 +17,7 @@ namespace Data.Models
 
         public DbSet<Employee> Employees { get; set; }
 
-        public DbSet<EmployeeWeeklyHours> EmployeesWeeklyHours { get; set; }
+        public DbSet<EmployeeDailyHours> EmployeesDailyHours { get; set; }
 
         public DbSet<Office> Offices { get; set; }
 

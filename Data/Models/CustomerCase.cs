@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Data.Models
 {
-    public class CustomerCase : BaseReposityory
+    public class CustomerCase : BaseEntity
     {
 
         [MaxLength(15)]
