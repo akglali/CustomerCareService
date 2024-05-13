@@ -57,13 +57,24 @@ namespace CustomerCareService.Controllers
 
             EmployeeDailyHours employeeRecord = await _dailyHoursRepository.GetClockedInEmployeeInfo(dailyWorkDTO.EmployeeCode);
 
-            Console.WriteLine("asdfsadfasdfasd"+employeeRecord.Id);
+            Console.WriteLine("asdfsadfasdfasd "+employeeRecord.Id);
             
             employeeRecord.EndTime = dailyWorkDTO.EndTime.ToUniversalTime();
 
             await _dailyHoursRepository.UpdateAsync(employeeRecord);
 
             return Ok();
+        }
+
+
+        [HttpGet("GetTotalHour")]
+
+        public async Task<IActionResult> GetTotalHour(int empId, int month)
+        {
+
+            var employee = await _employeeRepository.GetEmployeeByCode(empId);
+
+            return Ok(await _dailyHoursRepository.GetTotalMonthlyHours((int)employee.Id,month));
         }
     }
 }

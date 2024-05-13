@@ -10,7 +10,6 @@ namespace Shared.Repositories
     public class SalaryRepository(DatabaseContext context) : BaseRepository<Salary>(context)
     {
 
-       
 
     }
 }

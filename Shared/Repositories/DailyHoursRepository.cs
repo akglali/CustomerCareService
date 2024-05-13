@@ -17,6 +17,7 @@ namespace Shared.Repositories
         {
             // Get the current date in UTC
             DateTime currentDateUtc = DateTime.UtcNow.Date;
+           Console.WriteLine(currentDateUtc.ToString(), currentDateUtc);
 
             var employeeRecord = await context.EmployeesDailyHours
                 .Include(e => e.Employee).Where(e=>e.StartTime.ToUniversalTime().Date == currentDateUtc)
@@ -24,6 +25,8 @@ namespace Shared.Repositories
 
             return employeeRecord != null;
         }
+
+     
 
         public async Task<EmployeeDailyHours> GetClockedInEmployeeInfo(int EmployeeCode)
         {
@@ -34,9 +37,32 @@ namespace Shared.Repositories
             var employeeRecord = await context.EmployeesDailyHours
                 .Include(e => e.Employee)
                 .FirstOrDefaultAsync(e => e.Employee.EmployeeCode == EmployeeCode &&
-                                          e.StartTime.ToUniversalTime().Date == currentDateUtc);
+                                          e.StartTime.ToUniversalTime().Date == currentDateUtc &&
+                                          e.EndTime == null); // Check if EndTime is null
 
             return employeeRecord;
+        }
+
+
+        public async Task<double> GetTotalMonthlyHours(int EmpID, int month)
+        {
+            // Get the start and end date of the selected month in UTC
+            DateTime startDate = new DateTime(DateTime.UtcNow.Year, month, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+
+            // Query the database for all clock-in and clock-out records of the employee within the specified month
+            var employeeRecords = await context.EmployeesDailyHours
+                .Include(e => e.Employee)
+                .Where(e => e.Employee.Id == EmpID &&
+                            e.StartTime >= startDate &&
+                            e.StartTime <= endDate &&
+                            e.EndTime.HasValue)
+                .ToListAsync();
+
+            // Calculate the total hours worked
+            double totalHours = employeeRecords.Sum(e => (e.EndTime.Value - e.StartTime).TotalHours);
+
+            return totalHours;
         }
     }
 }

@@ -19,4 +19,6 @@ namespace Shared.DTO
 
         public DateTime EndTime { get; set; }
     }
+
+  
 }
