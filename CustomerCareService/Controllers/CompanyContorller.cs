@@ -1,44 +1,32 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
-using Shared.Repositories;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Shared.Exceptions;
+using Shared.Services;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyContorller: ControllerBase
+    public class CompanyContorller(CompanyService companyService): ControllerBase
     {
 
-
-        
-        private readonly CompanyRepository _companyRepository;
-
-        public CompanyContorller(CompanyRepository companyRepository)
-        {
-            _companyRepository = companyRepository;
-        }
-
-
-        [HttpPost]  
+        [HttpPost("AddCompany")]  
 
         public async Task<IActionResult> AddCompany(AddCompanyDTO company)
         {
-            if( await _companyRepository.CompanyExists(company.CompanyCode) )
+          try
             {
-                return Conflict("The company code is exist");
-            }
-
-            var newCompany= new Company()
+               await companyService.AddCompany(company);
+               return Ok(company);
+            }catch (Exception ex)
+            {
+                if (ex is DuplicateException)
                 {
-                CompanyCode = company.CompanyCode,
-                CompanyName = company.CompanyName,
-            };
+                    return Conflict(ex.Message);
+                }
 
-            await _companyRepository.AddAsync(newCompany);
-            return Ok();
+                return Problem(ex.Message, null, 500);
+            }
 
         }
 
@@ -46,14 +34,25 @@ namespace CustomerCareService.Controllers
 
         public async Task<IActionResult> GetCompanyByCode(int CompanyCode)
         {
-            if (!await _companyRepository.CompanyExists(CompanyCode))
+            try{
+            
+                var company = await companyService.GetCompanyByCode(CompanyCode);
+                return Ok(company);
+
+            }
+            catch (Exception ex)
             {
-                return Conflict("The company code is not exist");
+                if (ex is MyNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                Problem(ex.Message, null, 500);
+
             }
 
-            var company = await _companyRepository.CompanyByCode(CompanyCode);
+            return Ok();
 
-            return Ok(company);
+
         }
 
 
@@ -62,13 +61,12 @@ namespace CustomerCareService.Controllers
         {
             try
             {
-                var companies = await _companyRepository.GetAllCompanies();
+                var companies = await companyService.GetAllCompanies();
                 return Ok(companies);
             }
             catch (Exception ex)
             {
 
-                // Log the exception
                 return StatusCode(500, "An error occurred while retrieving offices.");
             }
         }
