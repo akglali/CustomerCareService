@@ -30,9 +30,5 @@ namespace Data.Models
         public List<CustomerCase> CustomerCases { get; set; }
 
 
-
-
-
-
     }
 }
