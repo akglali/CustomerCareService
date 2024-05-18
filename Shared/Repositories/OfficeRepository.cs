@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Shared.Repositories
 {
 
-    public class OfficeRepository(DatabaseContext context) : BaseRepository<Office>(context)
+    public class OfficeRepository(DatabaseContext context) : BaseRepository<Office>(context), IOfficeRepository
     {
 
 
@@ -29,11 +29,11 @@ namespace Shared.Repositories
 
         public async Task<List<OfficeDTOWithAllEntities>> GetAllOffice()
         {
-            var offices = await context.Offices.Include(o=> o.Company).ToListAsync();
+            var offices = await context.Offices.Include(o => o.Company).ToListAsync();
 
 
             var allOffice = new List<OfficeDTOWithAllEntities>();
-          
+
             foreach (var office in offices)
             {
                 allOffice.Add(new OfficeDTOWithAllEntities()
@@ -69,7 +69,7 @@ namespace Shared.Repositories
                     CompanyName = office.Company.CompanyName,
                 },
             };
-        
+
         }
     }
 }

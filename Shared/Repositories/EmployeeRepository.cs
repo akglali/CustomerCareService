@@ -20,8 +20,13 @@ namespace Shared.Repositories
         public async Task<Employee?> GetEmployeeByCode(int EmployeeCode)
         {
 
-            return await context.Employees.FirstOrDefaultAsync(e => e.EmployeeCode == EmployeeCode);
+            return await context.Employees.Include(o=>o.Office).FirstOrDefaultAsync(e => e.EmployeeCode == EmployeeCode);
         }
 
+        public async Task<List<Employee>> GetAllEmployees()
+        {
+            var employees=await context.Employees.ToListAsync();
+            return employees;
+        }        
     }
 }

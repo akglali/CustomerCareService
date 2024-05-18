@@ -44,7 +44,7 @@ namespace Shared.Repositories
         }
 
 
-        public async Task<double> GetTotalMonthlyHours(int EmpID, int month)
+        public async Task<double> GetTotalMonthlyHours(long EmpID, int month)
         {
             // Get the start and end date of the selected month in UTC
             DateTime startDate = new DateTime(DateTime.UtcNow.Year, month, 1, 0, 0, 0, DateTimeKind.Utc);
