@@ -22,7 +22,8 @@ namespace Shared.Repositories
 
         public async Task<Customer?> GetCustomerByPhone(string CustomerPhone)
         {
-            return await context.Customers.FirstOrDefaultAsync(c=> c.CustomerPhone == CustomerPhone);
+            return await context.Customers.Include(c => c.Office).
+                FirstOrDefaultAsync(c=> c.CustomerPhone == CustomerPhone);
         }
 
         public async Task<CustomerDetailDTO> GetCustomerDetail(string phone)
