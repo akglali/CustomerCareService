@@ -1,55 +1,40 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
-using Shared.Repositories;
+using Shared.Exceptions;
+using Shared.Services;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController(CustomerService customerService) : ControllerBase
     {
 
-        private readonly OfficeRepository _officeRepository;
-        private readonly CustomerRepository _customerRepository;
-
-
-        public CustomerController(OfficeRepository officeRepository,CustomerRepository customerRepository)
-        {
-            _officeRepository = officeRepository;
-            _customerRepository = customerRepository;
-        }
+    
 
         [HttpPost("AddCustomer")]
 
         public  async Task<IActionResult> AddCustomer(CustomerDTO customer)
         {
-            if(!await _officeRepository.OfficeExist(customer.OfficeCode))
-            {
-                return BadRequest("There is no such an office");
 
-            }else if (await _customerRepository.CustomerExist(customer.PhoneNumber))
+            try
             {
-                return Conflict("The Customer Already Exist");
+                await customerService.AddCustomer(customer);
+            }catch (Exception ex)
+            {
+                if(ex is MyNotFoundException)
+                {
+                    return base.NotFound(ex.Message);
+                }else if(ex is DuplicateException)
+                {
+                    return base.Conflict(ex.Message);
+
+                }
+
+                Problem(ex.Message,null,500);
+
 
             }
-
-            var office = await  _officeRepository.GetOfficeById(customer.OfficeCode);
-
-            var newCustomer = new Customer()
-            {
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
-                CreatedDate = DateTime.UtcNow,
-                CustomerEmail=customer.Email,
-                CustomerPhone=customer.PhoneNumber,
-                Office= office, // it can't be null since we checked if office exist or not
-             
-            };
-
-            await _customerRepository.AddAsync(newCustomer);
-
             return Ok();
         }
 
@@ -58,15 +43,26 @@ namespace CustomerCareService.Controllers
 
         public async Task<IActionResult> GetCustomerDetailByPhone(string phone)
         {
-            if (!await _customerRepository.CustomerExist(phone))
+            try
             {
-                return BadRequest("The Customer is not exist");
+
+                CustomerDetailDTO customer = await customerService.GetCustomerDetailByPhone(phone);
+
+                return Ok(customer);
 
             }
+            catch (Exception ex)
+            {
 
-            var customer= await _customerRepository.GetCustomerDetail(phone);
+                if(ex is MyNotFoundException)
+                {
+                    return base.NotFound(ex.Message);
+                }
+                Problem(ex.Message, null,500);
+            }
+            
+            return Ok();
 
-            return Ok(customer);
         }
     }
 }

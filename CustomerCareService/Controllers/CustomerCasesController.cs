@@ -1,56 +1,49 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
-using Shared.Repositories;
+using Shared.Exceptions;
+using Shared.Services;
 
 namespace CustomerCareService.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerCasesController : Controller
+    public class CustomerCasesController(CustomerCaseService customerCaseService) : Controller
     {
 
-        public readonly CustomerCaseRepository _customerCaseRepository;
-        public readonly EmployeeRepository _employeeRepository;
-        public readonly CustomerRepository _customerRepository;
-
-        public CustomerCasesController(CustomerCaseRepository customerCaseRepository, EmployeeRepository employeeRepository, CustomerRepository customerRepository)
-        {
-            _customerCaseRepository = customerCaseRepository;
-            _employeeRepository = employeeRepository;
-            _customerRepository = customerRepository;
-        }
+      
 
         [HttpPost("AddCase")]
         public async Task<IActionResult> AddCase(CustomerCaseDTO customerCase)
         {
 
-            if (!await _customerRepository.CustomerExist(customerCase.CustomerPhone))
+            try
             {
-                return BadRequest("Please save the customers detail first then create the case");
-            }else if (! await _employeeRepository.CheckEmployeeExist(customerCase.EmployeeId))
-            {
-                return BadRequest("There is no such an employee");
+                string caseNumber = await customerCaseService.AddCase(customerCase);
+                return Ok($"your case number is {caseNumber}");
 
+            }catch (Exception ex) {
+
+                if (ex is MyNotFoundException)
+                {
+                    Console.WriteLine("asdfasdf");
+
+                    return NotFound(ex.Message);
+
+                }else if ( ex is InvalidOperationException )
+                {
+                    
+                    return Conflict(ex.Message);
+
+                }
+
+                    Console.WriteLine("asdkjhfgasdjf");
+
+
+                return Problem(ex.Message, null, 500);
             }
 
 
-            var newCase = new CustomerCase() {
-                Complain = customerCase.Complain,
-                Notes = customerCase.Notes,
-                Solution = customerCase.Solution,
-                Customer = await _customerRepository.GetCustomerByPhone(customerCase.CustomerPhone),//if the customer is not exist the employee has to create a new customer
-                Employee = await _employeeRepository.GetEmployeeByCode(customerCase.EmployeeId),
-            
-            };
-
-
-            await _customerCaseRepository.AddAsync(newCase);
-
-
-
-            return Ok($"your case number is {newCase.CaseNumber}");
         }
     }
 }
