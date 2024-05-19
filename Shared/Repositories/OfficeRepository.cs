@@ -1,11 +1,7 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Repositories.Interfaces;
 
 namespace Shared.Repositories
 {
@@ -23,7 +19,7 @@ namespace Shared.Repositories
 
         public async Task<Office?> GetOfficeById(int OfficeCode)
         {
-            return await context.Offices.FirstOrDefaultAsync(o => o.OfficeCode == OfficeCode);
+            return await context.Offices.FirstAsync(o => o.OfficeCode == OfficeCode);
         }
 
 
@@ -56,7 +52,8 @@ namespace Shared.Repositories
         public async Task<OfficeDTOWithAllEntities> GetOfficeByCode(int OfficeCode)
         {
 
-            var office = await context.Offices.Include(o => o.Company).FirstOrDefaultAsync(o => o.OfficeCode == OfficeCode);
+            var office = await context.Offices.Include(o => o.Company).FirstAsync(o => o.OfficeCode == OfficeCode);
+
 
             return new OfficeDTOWithAllEntities()
             {
@@ -71,5 +68,7 @@ namespace Shared.Repositories
             };
 
         }
+
+    
     }
 }

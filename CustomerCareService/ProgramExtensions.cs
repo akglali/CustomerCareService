@@ -25,6 +25,9 @@ namespace CustomerCareService
             services.AddScoped<CompanyService>();
             services.AddScoped<CustomerService>();
             services.AddScoped<CustomerCaseService>();
+            services.AddScoped<EmployeeService>();
+            services.AddScoped<EmployeeDailyHoursService>();
+            services.AddScoped<OfficeService>();
 
            // services.AddScoped<ISalaryService, SalaryService>();
 

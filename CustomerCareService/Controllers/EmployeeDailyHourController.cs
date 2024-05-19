@@ -1,45 +1,43 @@
 ﻿using Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 using Shared.DTO;
 using Shared.Repositories;
+using Shared.Services;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeDailyHourController : ControllerBase
+    public class EmployeeDailyHourController(EmployeeDailyHoursService _employeeDailyHoursService) : ControllerBase
     {
 
-        private readonly EmployeeRepository _employeeRepository;
-        private readonly DailyHoursRepository _dailyHoursRepository;
-        public EmployeeDailyHourController(EmployeeRepository employeeRepository,DailyHoursRepository dailyHoursRepository)
-        {
-            _employeeRepository = employeeRepository;
-            _dailyHoursRepository=  dailyHoursRepository;
-        }
-
+       
         [HttpPost("ClockIn")]
 
         public async Task<IActionResult> ClockIn(EmployeeClockInDTO dailyWorkDTO)
         {
 
-            if(!await _employeeRepository.CheckEmployeeExist(dailyWorkDTO.EmployeeCode))
+            try
             {
-                return BadRequest("There is no such an employee");
+                await _employeeDailyHoursService.ClockIn(dailyWorkDTO);
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    return NotFound(ex.Message);
+                
+               }
+
+                Problem(ex.Message, null, 500);
+                return BadRequest(ex.Message);
+
             }
 
-            var newSchedule = new EmployeeDailyHours()
-            {
-                Employee = await _employeeRepository.GetEmployeeByCode(dailyWorkDTO.EmployeeCode), // it can not be null since we check if the employee exist or not
-                StartTime = dailyWorkDTO.StartHour.ToUniversalTime(),
-
-
-            };
-
-            await _dailyHoursRepository.AddAsync(newSchedule);
-
-            return Ok();
         }
 
 
@@ -47,23 +45,26 @@ namespace CustomerCareService.Controllers
         public async Task<IActionResult> ClockOut(EmployeeClockOutDTO dailyWorkDTO)
         {
 
-            if (!await _employeeRepository.CheckEmployeeExist(dailyWorkDTO.EmployeeCode))
+            try
             {
-                return BadRequest("There is no such an employee");
-            }else if (!await _dailyHoursRepository.EmployeeClockedInCheck(dailyWorkDTO.EmployeeCode))
+                await _employeeDailyHoursService.ClockOut(dailyWorkDTO);
+                return Ok();
+
+            }
+            catch (Exception ex)
             {
-                    return BadRequest("Employee has not clocked in");
+                if (ex is NotFoundException)
+                {
+                    return NotFound(ex.Message);
+
+                }
+
+                Problem(ex.Message, null, 500);
+                return BadRequest(ex.Message);
+
             }
 
-            EmployeeDailyHours employeeRecord = await _dailyHoursRepository.GetClockedInEmployeeInfo(dailyWorkDTO.EmployeeCode);
-
-            Console.WriteLine("asdfsadfasdfasd "+employeeRecord.Id);
-            
-            employeeRecord.EndTime = dailyWorkDTO.EndTime.ToUniversalTime();
-
-            await _dailyHoursRepository.UpdateAsync(employeeRecord);
-
-            return Ok();
+           
         }
 
 
@@ -72,9 +73,24 @@ namespace CustomerCareService.Controllers
         public async Task<IActionResult> GetTotalHour(int empId, int month)
         {
 
-            var employee = await _employeeRepository.GetEmployeeByCode(empId);
+            try
+            {
+                double totalhours= await _employeeDailyHoursService.GetTotalHour(empId, month);
 
-            return Ok(await _dailyHoursRepository.GetTotalMonthlyHours((int)employee.Id,month));
+                return Ok(totalhours);
+            }catch (Exception ex)
+            {
+
+                if (ex is NotFoundException)
+                {
+                    return NotFound(ex.Message);
+
+                }
+
+                Problem(ex.Message, null, 500);
+                return BadRequest(ex.Message);
+
+            }
         }
     }
 }

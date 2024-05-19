@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO;
+using Shared.Exceptions;
+using Shared.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,45 +14,36 @@ namespace Shared.Repositories
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OfficeController : ControllerBase
+    public class OfficeController(OfficeService _officeService) : ControllerBase
     {
 
-        private readonly OfficeRepository _officeRepository;
-        private readonly CompanyRepository _companyRepository;
-
-
-        public OfficeController(OfficeRepository officeRepository, CompanyRepository companyRepository)
-        {
-            _officeRepository = officeRepository;
-            _companyRepository = companyRepository;
-        }
-
+      
         [HttpPost("AddOffice")]
 
         public async Task<IActionResult> AddOffice(OfficeDTO office)
         {
+            try
+            {
+                await _officeService.AddOffice(office);
+                return Ok();
 
-            // checking the company and offices  
-            if (!await _companyRepository.CompanyExists(office.CompanyCode))
+            }catch (Exception ex)
             {
-                return Conflict("There is no such a company");
-            }else if ( await _officeRepository.OfficeExist(office.OfficeCode)) 
-            {
-                return Conflict("Office is already Exist");
+                if (ex is MyNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                else if (ex is DuplicateException)
+                {
+                    return Conflict(ex.Message);
+
+                }
+                Problem(ex.Message, null, 500);
+
+                return BadRequest(ex.Message);
+
+
             }
-
-            // get the company by its code to add into the office
-            var company = await _companyRepository.GetCompanyId(office.CompanyCode);
-            var newOffice= new Office()
-            {
-                OfficeCode = office.OfficeCode,
-                OfficeName = office.Name,
-                Company = company, // it can't be null since we already check if the companyCode Exist or not
-
-            };
-        await _officeRepository.AddAsync(newOffice);
-
-            return Ok();
 
         }
 
@@ -58,17 +51,16 @@ namespace Shared.Repositories
 
         public async  Task<IActionResult> GetAllOffices()
         {
-            try
-            {
-                var offices = await _officeRepository.GetAllOffice();
+            try { 
+                List<OfficeDTOWithAllEntities> offices = await _officeService.GetAllOffices();
                 return Ok(offices);
             }
-            catch (Exception ex)
-            {
-              
-                // Log the exception
-                return StatusCode(500, "An error occurred while retrieving offices.");
+            catch (Exception ex) {
+            
+                Problem(ex.Message, null, 500);
+                return BadRequest(ex.Message);
             }
+
         }
 
         [HttpGet("OfficeById")]
@@ -77,15 +69,21 @@ namespace Shared.Repositories
         public async Task<IActionResult> GetOfficeById(int OfficeCode)
         {
 
-            if(!await _officeRepository.OfficeExist(OfficeCode))
-            {
-                return Conflict("The office code is not exist");
+            try {
 
+                OfficeDTOWithAllEntities office = await _officeService.GetOfficeByCode(OfficeCode);
+                return Ok(office);
             }
+            catch (Exception ex) { 
+            
+                    if (ex is MyNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
 
-            var office = await _officeRepository.GetOfficeByCode(OfficeCode);
-
-            return Ok(office);
+                    Problem(ex.Message,null,500);
+                return BadRequest(ex.Message);
+            }
 
         }
 

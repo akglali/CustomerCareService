@@ -2,53 +2,46 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
+using Shared.Exceptions;
 using Shared.Repositories;
+using Shared.Services;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController(EmployeeService employeeService) : ControllerBase
     {
 
-        private readonly EmployeeRepository _employeeRepository;
-
-        private readonly OfficeRepository _officeRepository;
-
-        public EmployeeController( EmployeeRepository employeeRepository, OfficeRepository officeRepository)
-        {
-            _employeeRepository = employeeRepository;
-            _officeRepository = officeRepository;
-        }
-
+     
 
         [HttpPost("AddEmployee")]
 
         public async Task<IActionResult> AddEmployee(EmployeeDTO employee)
         {
 
-            if (!await _officeRepository.OfficeExist(employee.OfficeCode)){
-                return BadRequest("There is no office with that code");
-            }
-            else if (await _employeeRepository.CheckEmployeeExist(employee.EmployeeCode))
+            try
             {
-                return Conflict("The employee code is alredy assigned");
+                await employeeService.AddEmployee(employee);
+                return Ok(employee);
+
             }
-
-            var newEmployee = new Employee()
+            catch (Exception ex)
             {
-                EmployeeCode = employee.EmployeeCode,
-                Name = employee.EmployeeName,
-                Surname = employee.EmployeeSurname,
-                Email = employee.EmployeeEmail,
-                PhoneNumber=employee.EmployeePhoneNumber,
-                HourlyWage = employee.HourlyWage,
-                Office = await _officeRepository.GetOfficeById(employee.OfficeCode), // can not be null since we checked it before
-            };
+                if (ex is MyNotFoundException)
+                {
+                    return base.NotFound(ex.Message);
+                }
+                else if (ex is DuplicateException)
+                {
+                    return base.Conflict(ex.Message);
 
-            await _employeeRepository.AddAsync(newEmployee);
+                }
 
-            return Ok();
+                Problem(ex.Message, null, 500);
+
+                return BadRequest(ex.Message);
+            }
 
         }
         

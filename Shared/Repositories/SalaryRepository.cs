@@ -17,7 +17,7 @@ namespace Shared.Repositories
         public async Task<bool> HasPaid(int empCode, int month)
         {
             return await context.Salaries
-                                 .AnyAsync(s => s.Employee.EmployeeCode == empCode && s.Month == month);
+                                 .AnyAsync(s => s.Employee.EmployeeCode == empCode && s.Month== month);
         }
 
 

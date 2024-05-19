@@ -20,22 +20,26 @@ namespace CustomerCareService.Controllers
             try
             {
                 await customerService.AddCustomer(customer);
-            }catch (Exception ex)
+                return Ok();
+
+            }
+            catch (Exception ex)
             {
                 if(ex is MyNotFoundException)
                 {
-                    return base.NotFound(ex.Message);
+                    return NotFound(ex.Message);
                 }else if(ex is DuplicateException)
                 {
-                    return base.Conflict(ex.Message);
+                    return Conflict(ex.Message);
 
                 }
 
                 Problem(ex.Message,null,500);
 
+                return BadRequest();
 
             }
-            return Ok();
+
         }
 
 
