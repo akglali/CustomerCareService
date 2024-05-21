@@ -2,13 +2,21 @@
 using Shared.DTO;
 using Shared.Exceptions;
 using Shared.Services;
+using Shared.Services.Interface;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyContorller(CompanyService companyService): ControllerBase
+    public class CompanyContorller: ControllerBase
     {
+
+        private readonly ICompanyService _companyService;
+
+        public CompanyContorller(ICompanyService companyService)
+        {
+            _companyService = companyService;
+        }
 
         [HttpPost("AddCompany")]  
 
@@ -16,7 +24,7 @@ namespace CustomerCareService.Controllers
         {
           try
             {
-               await companyService.AddCompany(company);
+               await _companyService.AddCompany(company);
                return Ok(company);
             }catch (Exception ex)
             {
@@ -36,7 +44,7 @@ namespace CustomerCareService.Controllers
         {
             try{
             
-                var company = await companyService.GetCompanyByCode(CompanyCode);
+                var company = await _companyService.GetCompanyByCode(CompanyCode);
                 return Ok(company);
 
             }
@@ -61,7 +69,7 @@ namespace CustomerCareService.Controllers
         {
             try
             {
-                var companies = await companyService.GetAllCompanies();
+                var companies = await _companyService.GetAllCompanies();
                 return Ok(companies);
             }
             catch (Exception ex)

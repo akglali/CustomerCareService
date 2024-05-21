@@ -1,16 +1,14 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
 using Shared.Exceptions;
-using Shared.Repositories;
-using Shared.Services;
+
+using Shared.Services.Interface;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController(EmployeeService employeeService) : ControllerBase
+    public class EmployeeController(IEmployeeService employeeService) : ControllerBase
     {
 
      

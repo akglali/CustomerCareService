@@ -1,16 +1,13 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 using Shared.DTO;
-using Shared.Repositories;
-using Shared.Services;
+using Shared.Services.Interface;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeDailyHourController(EmployeeDailyHoursService _employeeDailyHoursService) : ControllerBase
+    public class EmployeeDailyHourController(IEmployeeDailyHoursService _employeeDailyHoursService) : ControllerBase
     {
 
        

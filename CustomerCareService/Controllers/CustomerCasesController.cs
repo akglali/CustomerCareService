@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
 using Shared.Exceptions;
-using Shared.Services;
+using Shared.Services.Interface;
 
 namespace CustomerCareService.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerCasesController(CustomerCaseService customerCaseService) : Controller
+    public class CustomerCasesController(ICustomerCaseService customerCaseService) : Controller
     {
 
       

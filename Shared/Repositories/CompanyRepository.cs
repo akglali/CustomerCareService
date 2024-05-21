@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Data.Models;
 using Shared.DTO;
+using Shared.Repositories.Interfaces;
 
 
 namespace Shared.Repositories
 {
-    public class CompanyRepository (DatabaseContext context): BaseRepository<Company>(context)
+    public class CompanyRepository(DatabaseContext context) : BaseRepository<Company>(context), ICompanyRepository
     {
-      
+
 
         public async Task<bool> CompanyExists(int companyCode)
         {
@@ -24,15 +25,17 @@ namespace Shared.Repositories
         public async Task<CompanyDTO> CompanyByCode(int CompanyCode)
         {
 
-            var company= await context.Companies.Include(c => c.Offices).FirstOrDefaultAsync(c => c.CompanyCode == CompanyCode);
+            var company = await context.Companies.Include(c => c.Offices).FirstOrDefaultAsync(c => c.CompanyCode == CompanyCode);
 
-            return new CompanyDTO(){
+            return new CompanyDTO()
+            {
                 CompanyCode = company.CompanyCode,
                 CompanyName = company.CompanyName,
-                Offices = company.Offices!.Select(o => new OfficeCompanyDTO{
-                    Name=o.OfficeName,
-                    OfficeCode= o.OfficeCode, 
-                
+                Offices = company.Offices!.Select(o => new OfficeCompanyDTO
+                {
+                    Name = o.OfficeName,
+                    OfficeCode = o.OfficeCode,
+
                 }).ToList()
             };
         }
@@ -40,13 +43,13 @@ namespace Shared.Repositories
         public async Task<List<CompanyDTO>> GetAllCompanies()
         {
 
-            var companies= await context.Companies.Include(c => c.Offices).ToListAsync();
+            var companies = await context.Companies.Include(c => c.Offices).ToListAsync();
 
             var allCompanies = new List<CompanyDTO>();
 
 
-            foreach(var company in companies)
-            {
+            foreach (var company in companies)
+            { 
                 allCompanies.Add(new CompanyDTO
                 {
                     CompanyCode = company.CompanyCode,
@@ -61,7 +64,7 @@ namespace Shared.Repositories
             }
 
 
-           
+
             return allCompanies;
 
         }

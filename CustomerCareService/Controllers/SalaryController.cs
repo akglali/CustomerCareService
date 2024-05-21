@@ -1,16 +1,12 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Exceptions;
-using Shared.Repositories;
-using Shared.Services;
 using Shared.Services.Interface;
 
 namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SalaryController(SalaryService salaryService) : ControllerBase
+    public class SalaryController(ISalaryService salaryService) : ControllerBase
     {
         [HttpPost("MakePaymentForAllEmployees")]
         public async Task<IActionResult> MakePaymentForAllEmployees(int month)

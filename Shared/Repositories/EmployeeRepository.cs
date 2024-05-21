@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Repositories
 {
-    public class EmployeeRepository(DatabaseContext context) : BaseRepository<Employee>(context)
+    public class EmployeeRepository(DatabaseContext context) : BaseRepository<Employee>(context), IEmployeeRepository
     {
 
         public async Task<bool> CheckEmployeeExist(int EmployeeCode)
@@ -20,13 +21,13 @@ namespace Shared.Repositories
         public async Task<Employee?> GetEmployeeByCode(int EmployeeCode)
         {
 
-            return await context.Employees.Include(o=>o.Office).FirstOrDefaultAsync(e => e.EmployeeCode == EmployeeCode);
+            return await context.Employees.Include(o => o.Office).FirstOrDefaultAsync(e => e.EmployeeCode == EmployeeCode);
         }
 
         public async Task<List<Employee>> GetAllEmployees()
         {
-            var employees=await context.Employees.ToListAsync();
+            var employees = await context.Employees.ToListAsync();
             return employees;
-        }        
+        }
     }
 }

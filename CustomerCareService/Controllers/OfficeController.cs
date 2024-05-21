@@ -1,20 +1,13 @@
-﻿using Data.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTO;
 using Shared.Exceptions;
-using Shared.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Services.Interface;
 
 namespace Shared.Repositories
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OfficeController(OfficeService _officeService) : ControllerBase
+    public class OfficeController(IOfficeService _officeService) : ControllerBase
     {
 
       
