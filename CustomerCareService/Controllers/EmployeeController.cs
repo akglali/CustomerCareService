@@ -8,7 +8,7 @@ namespace CustomerCareService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController(IEmployeeService employeeService) : ControllerBase
+    public class EmployeeController(IEmployeeService _employeeService) : ControllerBase
     {
 
      
@@ -20,7 +20,7 @@ namespace CustomerCareService.Controllers
 
             try
             {
-                await employeeService.AddEmployee(employee);
+                await _employeeService.AddEmployee(employee);
                 return Ok(employee);
 
             }
@@ -41,6 +41,26 @@ namespace CustomerCareService.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpGet("GetEmployeeInfo")]
+        public async Task<IActionResult> GetEmployeeInfo(int empCode)
+        {
+            try
+            {
+
+            var employee = await _employeeService.GetEmployeeByCode(empCode);
+                return Ok(employee);
+            }catch (Exception ex)
+            {
+                if (ex is MyNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                Problem(ex.Message, null, 500);
+
+                return BadRequest(ex.Message);
+            }
         }
         
     }

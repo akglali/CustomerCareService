@@ -41,5 +41,27 @@ namespace Shared.Services
 
             await _employeeRepository.AddAsync(newEmployee);
         }
+
+        public async Task<EmployeeDTO?> GetEmployeeByCode(int empCode)
+        {
+
+            if (!await _employeeRepository.CheckEmployeeExist(empCode))
+            {
+                throw new NotFoundException($"The employee code {empCode} does not exist");
+            }
+
+            var employee= await _employeeRepository.GetEmployeeByCode(empCode);
+
+            return new EmployeeDTO
+            {
+                EmployeeName = employee.Name,
+                EmployeeSurname=employee.Surname,
+                EmployeeEmail = employee.Email,
+                EmployeePhoneNumber = employee.PhoneNumber,
+                EmployeeCode = employee.EmployeeCode,
+                HourlyWage=employee.HourlyWage,
+                OfficeCode=employee.Office.OfficeCode
+            };
+        }
     }
 }

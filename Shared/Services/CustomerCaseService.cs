@@ -9,6 +9,29 @@ namespace Shared.Services
     public class CustomerCaseService(CustomerCaseRepository _customerCaseRepository, EmployeeRepository _employeeRepository, CustomerRepository _customerRepository) : ICustomerCaseService
     {
 
+
+        public async Task<CustomerCaseDTO> GetCustomerCase(string caseNumber)
+        {
+
+            if (!await _customerCaseRepository.CaseExist(caseNumber))
+            {
+                throw new MyNotFoundException($"Case number {caseNumber} is not exist");
+            }
+
+            CustomerCase customerCase = await _customerCaseRepository.GetCustomerCaseByCaseNumber(caseNumber);
+
+            return new CustomerCaseDTO
+            {
+                Complain= customerCase.Complain,
+                CustomerPhone=customerCase.Customer.CustomerPhone,
+                EmployeeCode=customerCase.Employee.EmployeeCode,
+                Notes=customerCase.Notes,
+                Solution=customerCase.Solution,
+            };
+
+
+
+        }
         public async Task<string> AddCase(CustomerCaseDTO customerCase)
         {
             if (!await _customerRepository.CustomerExist(customerCase.CustomerPhone))
@@ -51,5 +74,7 @@ namespace Shared.Services
 
             return newCase.CaseNumber;
         }
+
+       
     }
 }

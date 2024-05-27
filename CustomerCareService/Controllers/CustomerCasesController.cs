@@ -8,7 +8,7 @@ namespace CustomerCareService.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerCasesController(ICustomerCaseService customerCaseService) : Controller
+    public class CustomerCasesController(ICustomerCaseService _customerCaseService) : Controller
     {
 
       
@@ -19,28 +19,46 @@ namespace CustomerCareService.Controllers
 
             try
             {
-                string caseNumber = await customerCaseService.AddCase(customerCase);
+                string caseNumber = await _customerCaseService.AddCase(customerCase);
                 return Ok($"your case number is {caseNumber}");
 
             }catch (Exception ex) {
 
                 if (ex is MyNotFoundException)
                 {
-                    Console.WriteLine("asdfasdf");
 
                     return NotFound(ex.Message);
 
-                }else if ( ex is InvalidOperationException )
+                }else if ( ex is DuplicateException )
                 {
                     
                     return Conflict(ex.Message);
 
                 }
 
-                    Console.WriteLine("asdkjhfgasdjf");
+                Problem(ex.Message, null, 500);
 
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetCustomerCase")]
+        public async Task<IActionResult>  GetCustomerCase(string caseNumber)
+        {
+
+            try {
+               var customerCase= await _customerCaseService.GetCustomerCase(caseNumber);
+                return Ok(customerCase);
+
+            }catch (Exception ex)
+            {
+                if (ex is MyNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
 
                 return Problem(ex.Message, null, 500);
+
             }
 
 
